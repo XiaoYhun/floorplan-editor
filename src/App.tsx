@@ -13,7 +13,7 @@ function App() {
   useEffect(() => {
     fetch('/plan.json')
       .then((res) => res.json())
-      .then((data: any) => {
+      .then((data: { walls: Wall[] }) => {
         setWalls(data.walls);
       })
       .catch(() => {

@@ -35,7 +35,7 @@ export function Editor({ walls, selectedId, tool, onSelect, onMoveEndpoint }: Ed
   const lastPos = useRef({ x: 0, y: 0 });
 
   // convert a mouse event to world coordinates
-  const toWorld = (e: any): Point => {
+  const toWorld = (e: React.MouseEvent<SVGSVGElement> | React.PointerEvent<SVGSVGElement>): Point => {
     const rect = svgRef.current!.getBoundingClientRect();
     return {
       x: (e.clientX - rect.left - viewport.x) / viewport.scale,
@@ -77,16 +77,15 @@ export function Editor({ walls, selectedId, tool, onSelect, onMoveEndpoint }: Ed
       let p = toWorld(e);
 
       // snap to nearby centers of other walls, put this logic here to prioritize endpoints snap
-      const snapFromScreenPx = 12 / viewport.scale;
+      const snapDistance = SNAP_DIST / viewport.scale;
       for (const w of walls) {
         if (w.id === drag.id) continue;
         const onWall = closestPointOnSegment(p.x, p.y, w.start.x, w.start.y, w.end.x, w.end.y);
-        if (dist(p, onWall) < snapFromScreenPx) {
+        if (dist(p, onWall) < snapDistance) {
           p = onWall;
         }
       }
       // snap to nearby endpoints of other walls
-      const snapDistance = SNAP_DIST / Math.min(1, viewport.scale / BASE_SCALE);
       for (const w of walls) {
         if (w.id === drag.id) continue;
         if (dist(p, w.start) < snapDistance) {
@@ -106,7 +105,7 @@ export function Editor({ walls, selectedId, tool, onSelect, onMoveEndpoint }: Ed
   };
 
   // figure out which wall was clicked
-  const handleClick = (e: any) => {
+  const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
     if (tool !== 'select' || drag) return;
     const p = toWorld(e);
     let hit: string | null = null;

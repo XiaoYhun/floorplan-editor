@@ -18,7 +18,7 @@ export function distance(
 }
 
 // how close an endpoint needs to be to snap
-export const SNAP_DIST = 0.5;
+export const SNAP_DIST = 12; // in pixels
 export const BASE_SCALE = 28;
 
 // build the polygon points string for a wall with thickness
